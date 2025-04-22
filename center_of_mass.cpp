@@ -1,9 +1,9 @@
 #include "center_of_mass.h"
 #include <cstdio>
 #include <cstdlib>
+#include <new>
 
-int readData(const char* fileName,
-             double** X, double** Y, double** M, int* K)
+int readData(const char* fileName, double*** matrix, int* K)
 {
     FILE* f = std::fopen(fileName, "r");
     if (!f) return -1;
@@ -13,43 +13,55 @@ int readData(const char* fileName,
         return -2;
     }
 
-    *X = new double[*K];
-    *Y = new double[*K];
-    *M = new double[*K];
-
-    for (int i = 0; i < *K; ++i)
-        if (std::fscanf(f, "%lf", &(*X)[i]) != 1) {
+    *matrix = new double*[*K];
+    for (int i = 0; i < *K; ++i) {
+        (*matrix)[i] = new (std::nothrow) double[3];
+        if (!(*matrix)[i]) {
+            for (int j = 0; j <= i; ++j) delete[] (*matrix)[j];
+            delete[] *matrix;
             std::fclose(f);
-            delete[] *X; delete[] *Y; delete[] *M;
+            freeData(*matrix, *K);
             return -3;
         }
+    }
 
     for (int i = 0; i < *K; ++i)
-        if (std::fscanf(f, "%lf", &(*Y)[i]) != 1) {
+        if (std::fscanf(f, "%lf", &(*matrix)[i][0]) != 1) {
             std::fclose(f);
-            delete[] *X; delete[] *Y; delete[] *M;
+            freeData(*matrix, *K);
             return -4;
         }
 
     for (int i = 0; i < *K; ++i)
-        if (std::fscanf(f, "%lf", &(*M)[i]) != 1) {
+        if (std::fscanf(f, "%lf", &(*matrix)[i][1]) != 1) {
             std::fclose(f);
-            delete[] *X; delete[] *Y; delete[] *M;
+            freeData(*matrix, *K);
             return -5;
         }
 
+    for (int i = 0; i < *K; ++i)
+        if (std::fscanf(f, "%lf", &(*matrix)[i][2]) != 1) {
+            std::fclose(f);
+            freeData(*matrix, *K);
+            return -6;
+        }
+
     std::fclose(f);
-    return 0;                                 
+    return 0;
 }
 
-void computeMomentSums(const double* X, const double* Y, const double* M, int K,
+void computeMomentSums(const double* const* matrix, int K,
                        double* sumXM, double* sumYM, double* sumM)
 {
     *sumXM = *sumYM = *sumM = 0.0;
     for (int i = 0; i < K; ++i) {
-        *sumXM += X[i] * M[i];
-        *sumYM += Y[i] * M[i];
-        *sumM  += M[i];
+        const double x = matrix[i][0];
+        const double y = matrix[i][1];
+        const double m = matrix[i][2];
+
+        *sumXM += x * m;
+        *sumYM += y * m;
+        *sumM  += m;
     }
 }
 
@@ -69,9 +81,8 @@ int writeResult(const char* fileName, double XC, double YC)
     return 0;
 }
 
-void freeData(double* X, double* Y, double* M)
+void freeData(double** matrix, int K)
 {
-    delete[] X;
-    delete[] Y;
-    delete[] M;
+    for (int i = 0; i < K; ++i) delete[] matrix[i];
+    delete[] matrix;
 }
