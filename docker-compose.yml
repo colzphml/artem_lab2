@@ -1,0 +1,9 @@
+services:
+  cpp-dev:
+    image: gcc:13
+    platform: linux/arm64
+    container_name: center_of_mass_dev
+    working_dir: /workspace
+    volumes:
+      - ./:/workspace
+    command: bash

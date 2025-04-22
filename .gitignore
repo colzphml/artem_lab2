@@ -1,0 +1,111 @@
+###############################################################################
+#  .gitignore для проекта C/C++ на macOS                                      #
+#  Содержит типовые исключения для:                                           #
+#    • системных файлов macOS                                                 #
+#    • артефактов сборки C/C++                                                #
+#    • IDE/редакторов (Xcode, VS Code, CLion и пр.)                           #
+###############################################################################
+
+########################
+# macOS системные файлы #
+########################
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.VolumeIcon.icns
+
+########################
+# Файлы C/C++ сборки    #
+########################
+# объектные файлы / статические и динамические библиотеки
+*.o
+*.obj
+*.lo
+*.la
+*.a
+*.lib
+*.so
+*.so.*
+*.dylib
+*.dll
+
+# исполняемые файлы
+a.out
+a.exe
+*.exe
+*.out
+*.app
+*.elf
+center_of_mass            # бинарь из примера
+
+# профилировщики / отладочные
+*.gcno
+*.gcda
+*.gcov
+*.profraw
+*.profdata
+
+########################
+# Каталоги сборок       #
+########################
+/build/
+/Build/
+/bin/
+/obj/
+/out/
+/Debug/
+/Release/
+/x64/
+/x86/
+
+########################
+# CMake‑артефакты       #
+########################
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+Makefile
+compile_commands.json
+
+########################
+# IDE и редакторы       #
+########################
+# VS Code
+.vscode/
+# CLion / IntelliJ
+.idea/
+*.iws
+*.iml
+*.ipr
+# Xcode
+*.xcworkspace
+*.xcuserstate
+*.xcuserdata/
+DerivedData/
+# Sublime
+*.sublime-project
+*.sublime-workspace
+
+########################
+# Docker артефакты      #
+########################
+*.log
+*.pid
+docker-compose.override.yml
+.env
+
+########################
+# Системные резервные   #
+########################
+*~
+*.swp
+*.swo
+*.bak
+*.tmp
+*.temp
